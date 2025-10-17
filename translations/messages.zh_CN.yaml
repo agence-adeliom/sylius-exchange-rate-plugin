@@ -1,0 +1,6 @@
+adeliom:
+    sylius_exchange_rate:
+        ui:
+            confirm_synchronization: 您确定要同步汇率吗？
+            synchronize: 同步
+            synchronization_warning: 汇率将被更新。此操作无法撤销。

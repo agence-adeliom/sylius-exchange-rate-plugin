@@ -1,5 +1,5 @@
 <?php
 
 return [
-    Acme\SyliusExamplePlugin\AcmeSyliusExamplePlugin::class => ['all' => true],
+    Adeliom\SyliusExchangeRatePlugin\AdeliomSyliusExchangeRatePlugin::class => ['all' => true],
 ];

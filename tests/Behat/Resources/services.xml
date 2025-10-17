@@ -5,12 +5,21 @@
         <defaults public="true" />
         <!-- Put your Behat services here -->
 
-        <service id="acme_sylius_example.context.ui.shop.welcome" class="Tests\Acme\SyliusExamplePlugin\Behat\Context\Ui\Shop\WelcomeContext">
-            <argument type="service" id="acme_sylius_example.page.shop.static_welcome" />
-            <argument type="service" id="acme_sylius_example.page.shop.dynamic_welcome" />
+        <service id="adeliom_sylius_exchange_rate.context.ui.shop.welcome" class="Tests\Adeliom\SyliusExchangeRatePlugin\Behat\Context\Ui\Shop\WelcomeContext">
+            <argument type="service" id="adeliom_sylius_exchange_rate.page.shop.static_welcome" />
+            <argument type="service" id="adeliom_sylius_exchange_rate.page.shop.dynamic_welcome" />
         </service>
 
-        <service id="acme_sylius_example.page.shop.static_welcome" class="Tests\Acme\SyliusExamplePlugin\Behat\Page\Shop\StaticWelcomePage" parent="sylius.behat.symfony_page" public="false" />
-        <service id="acme_sylius_example.page.shop.dynamic_welcome" class="Tests\Acme\SyliusExamplePlugin\Behat\Page\Shop\DynamicWelcomePage" parent="sylius.behat.symfony_page" public="false" />
+        <service id="adeliom_sylius_exchange_rate.page.shop.static_welcome" class="Tests\Adeliom\SyliusExchangeRatePlugin\Behat\Page\Shop\StaticWelcomePage" parent="sylius.behat.symfony_page" public="false" />
+        <service id="adeliom_sylius_exchange_rate.page.shop.dynamic_welcome" class="Tests\Adeliom\SyliusExchangeRatePlugin\Behat\Page\Shop\DynamicWelcomePage" parent="sylius.behat.symfony_page" public="false" />
+
+        <!-- Admin Exchange Rate Context and Pages -->
+        <service id="adeliom_sylius_exchange_rate.context.ui.admin.exchange_rate" class="Tests\Adeliom\SyliusExchangeRatePlugin\Behat\Context\Ui\Admin\ExchangeRateContext">
+            <argument type="service" id="adeliom_sylius_exchange_rate.page.admin.exchange_rate.index" />
+        </service>
+
+        <service id="adeliom_sylius_exchange_rate.page.admin.exchange_rate.index" class="Tests\Adeliom\SyliusExchangeRatePlugin\Behat\Page\Admin\ExchangeRate\IndexPage" parent="sylius.behat.page.admin.crud.index" public="false">
+            <argument type="string">sylius_admin_exchange_rate_index</argument>
+        </service>
     </services>
 </container>

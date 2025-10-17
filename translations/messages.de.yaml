@@ -1,0 +1,6 @@
+adeliom:
+    sylius_exchange_rate:
+        ui:
+            confirm_synchronization: Sind Sie sicher, dass Sie die Wechselkurse synchronisieren möchten?
+            synchronize: Synchronisieren
+            synchronization_warning: Die Wechselkurse werden aktualisiert. Diese Aktion kann nicht rückgängig gemacht werden.

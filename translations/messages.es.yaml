@@ -1,0 +1,6 @@
+adeliom:
+    sylius_exchange_rate:
+        ui:
+            confirm_synchronization: ¿Está seguro de que desea sincronizar los tipos de cambio?
+            synchronize: Sincronizar
+            synchronization_warning: Los tipos de cambio se actualizarán. Esta acción no se puede deshacer.

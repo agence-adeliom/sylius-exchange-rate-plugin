@@ -1,0 +1,6 @@
+adeliom:
+    sylius_exchange_rate:
+        ui:
+            confirm_synchronization: Czy na pewno chcesz zsynchronizować kursy walut?
+            synchronize: Synchronizuj
+            synchronization_warning: Kursy walut zostaną zaktualizowane. Tej akcji nie można cofnąć.

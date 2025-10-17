@@ -1,1 +1,6 @@
-# Define your own admin routes here
+# Exchange Rate Admin Routes
+
+adeliom_sylius_exchange_rate_admin:
+    resource: '@AdeliomSyliusExchangeRatePlugin/src/Controller/Admin'
+    type: attribute
+    prefix: /admin

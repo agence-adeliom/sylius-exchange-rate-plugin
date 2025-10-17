@@ -4,7 +4,20 @@ default:
     suites:
         greeting_customer:
             contexts:
-                - acme_sylius_example.context.ui.shop.welcome
+                - adeliom_sylius_exchange_rate.context.ui.shop.welcome
 
             filters:
                 tags: "@greeting_customer"
+
+        admin_exchange_rates:
+            contexts:
+                - sylius.behat.context.hook.doctrine_orm
+                - sylius.behat.context.transform.lexical
+
+                - sylius.behat.context.setup.admin_security
+                - sylius.behat.context.setup.channel
+
+                - adeliom_sylius_exchange_rate.context.ui.admin.exchange_rate
+
+            filters:
+                tags: "@admin_exchange_rates"

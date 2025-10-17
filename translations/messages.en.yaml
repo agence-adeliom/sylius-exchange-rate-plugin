@@ -1,0 +1,6 @@
+adeliom:
+    sylius_exchange_rate:
+        ui:
+            confirm_synchronization: Are you sure you want to synchronize exchange rates?
+            synchronize: Synchronize
+            synchronization_warning: Exchange rates will be updated. This action cannot be undone.

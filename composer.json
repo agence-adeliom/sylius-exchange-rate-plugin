@@ -1,13 +1,25 @@
 {
-    "name": "sylius/plugin-skeleton",
+    "name": "adeliom/sylius-exchange-rate-plugin",
     "type": "sylius-plugin",
-    "description": "Acme example plugin for Sylius.",
+    "description": "Sylius plugin for automatic exchange rate synchronization from external APIs",
     "keywords": [
         "sylius",
         "sylius-plugin",
-        "test-appication"
+        "exchange-rate",
+        "currency"
     ],
     "license": "MIT",
+    "homepage": "https://github.com/agence-adeliom/sylius-easy-crud-plugin",
+    "authors": [
+        {
+            "name": "Jean-David Daviet",
+            "homepage": "https://github.com/JeanDavidDaviet"
+        },
+        {
+            "name": "Jérôme Engeln",
+            "homepage": "https://github.com/jeromeengeln"
+        }
+    ],
     "require": {
         "php": "^8.2",
         "sylius/sylius": "^2.0"
@@ -64,12 +76,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Acme\\SyliusExamplePlugin\\": "src/"
+            "Adeliom\\SyliusExchangeRatePlugin\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\Acme\\SyliusExamplePlugin\\": ["tests/", "tests/TestApplication/src/"]
+            "Tests\\Adeliom\\SyliusExchangeRatePlugin\\": ["tests/", "tests/TestApplication/src/"]
         }
     },
     "scripts": {

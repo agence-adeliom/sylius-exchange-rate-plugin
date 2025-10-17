@@ -1,0 +1,53 @@
+{# Exchange Rate Synchronization Button #}
+
+{% set modal_id = 'modal-synchronize-exchange-rates' %}
+
+{% component 'sylius_admin:confirmation_modal' with {modal_id: modal_id, type: 'synchronize'} %}
+    {% import '@SyliusAdmin/shared/helper/button.html.twig' as button %}
+
+    {% block trigger %}
+        <div>
+            {{ button.default({
+                text: 'adeliom.sylius_exchange_rate.ui.synchronize'|trans,
+                icon: 'tabler:refresh',
+                attr: 'data-bs-toggle=modal data-bs-target=#' ~ modal_id,
+            }) }}
+        </div>
+    {% endblock %}
+
+    {% block header %}
+        <h1 class="modal-title py-5">{{ 'adeliom.sylius_exchange_rate.ui.confirm_synchronization'|trans }}</h1>
+    {% endblock %}
+
+    {% block content %}
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title py-5">{{ 'adeliom.sylius_exchange_rate.ui.confirm_synchronization'|trans }}</h1>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning" role="alert">
+                    {{ ux_icon('tabler:alert-triangle', {class: 'icon icon-sm me-2'}) }}
+                    {{ 'adeliom.sylius_exchange_rate.ui.synchronization_warning'|trans }}
+                </div>
+            </div>
+            <div class="modal-footer">
+                {{ block('footer') }}
+            </div>
+        </div>
+    {% endblock %}
+
+    {% block footer %}
+        <form action="{{ path('adeliom_admin_exchange_rate_synchronize') }}" method="POST">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('exchange_rate_synchronize') }}" />
+
+            {{ button.default({ text: 'sylius.ui.cancel'|trans, attr: 'data-bs-dismiss=modal' }) }}
+            {{ button.default({
+                text: 'adeliom.sylius_exchange_rate.ui.synchronize'|trans,
+                type: 'submit',
+                class: 'btn-primary',
+                icon: 'tabler:refresh',
+                attr: sylius_test_html_attribute('confirm-button')
+            }) }}
+        </form>
+    {% endblock %}
+{% endcomponent %}

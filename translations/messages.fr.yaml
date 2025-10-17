@@ -1,0 +1,6 @@
+adeliom:
+    sylius_exchange_rate:
+        ui:
+            confirm_synchronization: Êtes-vous sûr de vouloir synchroniser les taux de change ?
+            synchronize: Synchroniser
+            synchronization_warning: Les taux de change seront mis à jour. Il n'est pas possible de revenir en arrière.

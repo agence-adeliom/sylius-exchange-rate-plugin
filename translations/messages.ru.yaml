@@ -1,0 +1,6 @@
+adeliom:
+    sylius_exchange_rate:
+        ui:
+            confirm_synchronization: Вы уверены, что хотите синхронизировать курсы валют?
+            synchronize: Синхронизировать
+            synchronization_warning: Курсы валют будут обновлены. Это действие нельзя отменить.

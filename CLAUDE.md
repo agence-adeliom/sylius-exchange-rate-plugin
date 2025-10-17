@@ -122,3 +122,5 @@ This project includes specialized AI guides to assist with common plugin develop
 - **COMPATIBILITY_GUIDE.md** - Best practices for maintaining compatibility across different Sylius versions
 
 These guides provide detailed instructions and automated workflows to help maintain code quality and ensure proper plugin structure.
+- utilise ddev avant chaque commande php ou yarn ou npm ou console
+- use vendor/bin/console instead of bin/console

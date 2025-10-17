@@ -1,129 +1,359 @@
-<p align="center">
-    <a href="https://sylius.com" target="_blank">
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="https://media.sylius.com/sylius-logo-800-dark.png">
-          <source media="(prefers-color-scheme: light)" srcset="https://media.sylius.com/sylius-logo-800.png">
-          <img alt="Sylius Logo." src="https://media.sylius.com/sylius-logo-800.png">
-        </picture>
-    </a>
-</p>
+# Sylius Exchange Rate Plugin
 
-<h1 align="center">Plugin Skeleton</h1>
+A Sylius plugin that provides automatic exchange rate synchronization from external APIs with an extensible provider system.
 
-<p align="center">Skeleton for starting Sylius plugins.</p>
+## Features
 
-## Documentation
+- Automatic exchange rate synchronization from external APIs
+- Extensible provider architecture - easily add your own providers
+- Built-in providers:
+  - **ECB (European Central Bank)** - Free, no API key required
+  - **Fixer.io** - Requires API key (free tier available)
+- Admin interface with one-click synchronization button
+- Automatic provider discovery via Symfony tags
+- Priority-based provider system
+- Comprehensive logging
+- Error handling with detailed feedback
 
-For a comprehensive guide on Sylius Plugins development please go to Sylius documentation,
-there you will find the <a href="https://docs.sylius.com/en/latest/plugin-development-guide/index.html">Plugin Development Guide</a>, that is full of examples.
+## Requirements
 
-For more information about the **Test Application** included in the skeleton, please refer to the [Sylius documentation](https://docs.sylius.com/sylius-plugins/plugins-development-guide/testapplication).
+- PHP 8.2 or higher
+- Sylius 2.0 or higher
+- Symfony 6.4 or higher
 
-## Quickstart Installation
+## Installation
 
-Run `composer create-project sylius/plugin-skeleton ProjectName`.
+### 1. Install the plugin via Composer
 
-### Traditional
+```bash
+composer require acme/sylius-exchange-rate-plugin
+```
 
-1. From the plugin skeleton root directory, run the following commands:
+### 2. Enable the plugin
 
-    ```bash
-    (cd vendor/sylius/test-application && yarn install)
-    (cd vendor/sylius/test-application && yarn build)
-    vendor/bin/console assets:install
-   
-    vendor/bin/console doctrine:database:create
-    vendor/bin/console doctrine:migrations:migrate -n
-    # Optionally load data fixtures
-    vendor/bin/console sylius:fixtures:load -n
-    ```
+The plugin should be automatically enabled in `config/bundles.php`:
 
-To be able to set up a plugin's database, remember to configure your database credentials in `tests/Application/.env` and `tests/Application/.env.test`.
+```php
+return [
+    // ...
+    Acme\SyliusExchangeRatePlugin\AcmeSyliusExchangeRatePlugin::class => ['all' => true],
+];
+```
 
-2. Run your local server:
+### 3. Import routes
 
-      ```bash
-      symfony server:ca:install
-      symfony server:start -d
-      ```
+Add the following to `config/routes.yaml`:
 
-3. Open your browser and navigate to `https://localhost:8000`.
+```yaml
+acme_sylius_exchange_rate_admin:
+    resource: '@AcmeSyliusExchangeRatePlugin/config/routes/admin.yaml'
+    prefix: /admin
+```
 
-### Docker
+### 4. Import Twig hooks (for Sylius 2.0+)
 
-1. Execute `make init` to initialize the container and install the dependencies.
+Add to `config/packages/twig_hooks.yaml`:
 
-2. Execute `make database-init` to create the database and run migrations.
+```yaml
+imports:
+    - { resource: '@AcmeSyliusExchangeRatePlugin/config/twig_hooks/admin.yaml' }
+```
 
-3. (Optional) Execute `make load-fixtures` to load the fixtures.
+### 5. Configure environment variables
 
-4. Your app is available at `http://localhost`.
+Copy `.env.example` to your `.env` file and configure:
+
+```bash
+# .env
+FIXER_API_KEY=your_api_key_here  # Leave empty to use only ECB provider
+FIXER_BASE_CURRENCY=EUR
+```
+
+### 6. Clear cache
+
+```bash
+php bin/console cache:clear
+```
 
 ## Usage
 
-### Running plugin tests
+### Admin Interface
 
-  - PHPUnit
+1. Navigate to **Exchange Rates** in your Sylius admin panel (`/admin/exchange-rates`)
+2. Click the **"Synchronize Exchange Rates"** button
+3. The plugin will fetch rates from all enabled providers and update your exchange rates
+4. A success/error message will be displayed, and the page will reload
 
-    ```bash
-    vendor/bin/phpunit
-    ```
+### Available Providers
 
-  - Behat (non-JS scenarios)
+#### ECB (European Central Bank)
 
-    ```bash
-    vendor/bin/behat --strict --tags="~@javascript&&~@mink:chromedriver"
-    ```
+- **Status**: Always enabled
+- **API Key**: Not required
+- **Base Currency**: EUR
+- **Free**: Yes
+- **Documentation**: https://www.ecb.europa.eu/stats/eurofxref/
 
-  - Behat (JS scenarios)
- 
-    1. [Install Symfony CLI command](https://symfony.com/download).
- 
-    2. Start Headless Chrome:
-    
-      ```bash
-      google-chrome-stable --enable-automation --disable-background-networking --no-default-browser-check --no-first-run --disable-popup-blocking --disable-default-apps --allow-insecure-localhost --disable-translate --disable-extensions --no-sandbox --enable-features=Metal --headless --remote-debugging-port=9222 --window-size=2880,1800 --proxy-server='direct://' --proxy-bypass-list='*' http://127.0.0.1
-      ```
-    
-    3. Install SSL certificates (only once needed) and run test application's webserver on `127.0.0.1:8080`:
-    
-      ```bash
-      symfony server:ca:install
-      APP_ENV=test symfony server:start --port=8080 --daemon
-      ```
-    
-    4. Run Behat:
-    
-      ```bash
-      vendor/bin/behat --strict --tags="@javascript,@mink:chromedriver"
-      ```
-    
-  - Static Analysis
-      
-    - PHPStan
-    
-      ```bash
-      vendor/bin/phpstan analyse -c phpstan.neon -l max src/  
-      ```
+#### Fixer.io
 
-  - Coding Standard
-  
-    ```bash
-    vendor/bin/ecs check
-    ```
+- **Status**: Enabled when `FIXER_API_KEY` is set
+- **API Key**: Required (get it at https://fixer.io)
+- **Base Currency**: EUR (configurable, but free tier only supports EUR)
+- **Free Tier**: 100 requests/month
+- **Documentation**: https://fixer.io/documentation
 
-### Opening Sylius with your plugin
+## Creating Your Own Provider
 
-- Using `test` environment:
+The plugin makes it extremely easy to add your own exchange rate provider. Here's how:
 
-    ```bash
-    APP_ENV=test vendor/bin/console vendor/bin/console sylius:fixtures:load -n
-    APP_ENV=test symfony server:start -d
-    ```
-    
-- Using `dev` environment:
+### Step 1: Create a Provider Class
 
-    ```bash
-    vendor/bin/console vendor/bin/console sylius:fixtures:load -n
-    symfony server:start -d
-    ```
+Create a new class implementing `ExchangeRateProviderInterface`:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\ExchangeRate\Provider;
+
+use Acme\SyliusExchangeRatePlugin\Provider\ExchangeRateProviderInterface;
+use Acme\SyliusExchangeRatePlugin\Provider\DTO\ExchangeRateData;
+use Psr\Log\LoggerInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
+
+final class MyCustomProvider implements ExchangeRateProviderInterface
+{
+    public function __construct(
+        private readonly HttpClientInterface $httpClient,
+        private readonly LoggerInterface $logger,
+        private readonly ?string $apiKey = null,
+    ) {
+    }
+
+    public function fetchRates(): array
+    {
+        if (!$this->isEnabled()) {
+            return [];
+        }
+
+        try {
+            $this->logger->info('[MyCustomProvider] Fetching rates...');
+
+            // Fetch data from your API
+            $response = $this->httpClient->request('GET', 'https://api.example.com/rates', [
+                'query' => ['api_key' => $this->apiKey],
+                'timeout' => 10,
+            ]);
+
+            $data = $response->toArray();
+            $rates = [];
+
+            // Transform your API response into ExchangeRateData objects
+            foreach ($data['rates'] as $currency => $rate) {
+                $rates[] = new ExchangeRateData(
+                    sourceCurrency: 'USD',
+                    targetCurrency: $currency,
+                    ratio: (float) $rate,
+                    date: new \DateTimeImmutable(),
+                );
+            }
+
+            return $rates;
+        } catch (\Exception $e) {
+            $this->logger->error('[MyCustomProvider] Error: ' . $e->getMessage());
+            throw new \RuntimeException('MyCustomProvider failed: ' . $e->getMessage(), 0, $e);
+        }
+    }
+
+    public function getName(): string
+    {
+        return 'My Custom Provider';
+    }
+
+    public function isEnabled(): bool
+    {
+        return !empty($this->apiKey);
+    }
+}
+```
+
+### Step 2: Register as a Service
+
+Add your provider to `config/services.yaml`:
+
+```yaml
+services:
+    App\ExchangeRate\Provider\MyCustomProvider:
+        arguments:
+            $apiKey: '%env(default::MY_CUSTOM_API_KEY)%'
+        tags:
+            - { name: 'acme.exchange_rate_provider', priority: 80 }
+```
+
+### Step 3: Configure (Optional)
+
+Add environment variables to `.env`:
+
+```bash
+MY_CUSTOM_API_KEY=your_api_key
+```
+
+**That's it!** Your provider will be automatically discovered and used during synchronization.
+
+### Provider Priority
+
+Providers are executed in order of priority (higher first). Default priorities:
+- ECB: 100
+- Fixer: 90
+- Your custom providers: Set as needed
+
+If multiple providers return rates for the same currency pair, the **last one** wins (lower priority overwrites higher priority).
+
+## Architecture
+
+### Core Components
+
+```
+src/
+├── Provider/
+│   ├── ExchangeRateProviderInterface.php    # Interface for all providers
+│   ├── DTO/
+│   │   └── ExchangeRateData.php             # Normalized data structure
+│   ├── EcbProvider.php                       # ECB implementation
+│   └── FixerProvider.php                     # Fixer.io implementation
+├── Service/
+│   └── ExchangeRateSynchronizer.php          # Orchestrates synchronization
+├── Controller/
+│   └── Admin/
+│       └── SynchronizeExchangeRateController.php  # AJAX endpoint
+└── DependencyInjection/
+    └── CompilerPass/
+        └── ExchangeRateProviderPass.php      # Auto-discovery of providers
+```
+
+### How It Works
+
+1. **Provider Registration**: All services tagged with `acme.exchange_rate_provider` are automatically discovered by the `ExchangeRateProviderPass` compiler pass
+2. **Synchronization**: The `ExchangeRateSynchronizer` service:
+   - Iterates through all enabled providers (by priority)
+   - Calls `fetchRates()` on each provider
+   - Updates or creates `ExchangeRate` entities in Sylius
+   - Skips currencies that don't exist in your system
+3. **UI Integration**: A Twig hook injects a synchronization button into the admin interface
+4. **AJAX Request**: Clicking the button triggers an AJAX POST to the controller
+5. **Response**: JSON response with detailed results and auto-reload on success
+
+## Configuration
+
+### Provider Configuration
+
+Providers are configured via environment variables. See `.env.example` for available options.
+
+### Sylius Configuration
+
+No additional Sylius configuration is required. The plugin automatically:
+- Uses Sylius repositories and factories
+- Respects existing currencies in your system
+- Updates exchange rates safely via Doctrine
+
+## Logging
+
+All synchronization operations are logged. Check your application logs for:
+- Provider status (enabled/disabled)
+- API requests and responses
+- Rates updated/created
+- Errors and warnings
+
+Example log output:
+```
+[info] [ExchangeRateSynchronizer] Starting synchronization...
+[info] [ECB Provider] Fetching exchange rates from ECB...
+[info] [ECB Provider] Successfully fetched 31 exchange rates
+[info] [ExchangeRateSynchronizer] Synchronization complete. Created: 15, Updated: 16, Errors: 0
+```
+
+## Troubleshooting
+
+### Button Not Appearing
+
+1. Make sure Twig hooks are imported in `config/packages/twig_hooks.yaml`
+2. Clear cache: `php bin/console cache:clear`
+3. Check if routes are imported in `config/routes.yaml`
+
+### Provider Not Working
+
+1. Check environment variables are set correctly
+2. Check provider is enabled: `$provider->isEnabled()` returns true
+3. Review logs for detailed error messages
+4. Verify API key is valid
+
+### Rates Not Updating
+
+1. Ensure currencies exist in Sylius (Admin → Currencies)
+2. Check database connection
+3. Review logs for skipped currencies
+4. Verify provider is returning data
+
+## Testing
+
+### Run PHPUnit Tests
+
+```bash
+vendor/bin/phpunit
+```
+
+### Run Behat Tests
+
+```bash
+vendor/bin/behat
+```
+
+### Run Code Quality Checks
+
+```bash
+vendor/bin/phpstan analyse
+vendor/bin/ecs check
+```
+
+## Development
+
+### Using Docker
+
+```bash
+make init          # Initialize environment
+make up            # Start containers
+make database-init # Setup database
+make phpunit       # Run tests
+```
+
+### Traditional Setup
+
+```bash
+composer install
+symfony server:start -d
+vendor/bin/phpunit
+```
+
+## Contributing
+
+Contributions are welcome! Please:
+1. Fork the repository
+2. Create a feature branch
+3. Write tests for your changes
+4. Ensure code quality (PHPStan, ECS)
+5. Submit a pull request
+
+## License
+
+This plugin is licensed under the MIT License.
+
+## Credits
+
+- Developed with Sylius Plugin Skeleton
+- Uses Sylius 2.0 best practices
+- Follows Symfony coding standards
+
+## Support
+
+For issues and feature requests, please use the GitHub issue tracker.

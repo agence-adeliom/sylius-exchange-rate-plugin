@@ -9,8 +9,33 @@
         <import resource="services/**" />
     </imports>
 
+    <parameters>
+        <parameter key="adeliom.fixer.base_currency.default">EUR</parameter>
+    </parameters>
+
     <services>
-        <service id="Acme\SyliusExamplePlugin\Controller\GreetingController" autowire="true" autoconfigure="true" public="true" />
-        <!-- Put your services here -->
+        <!-- Exchange Rate Synchronization Services -->
+        <service id="Adeliom\SyliusExchangeRatePlugin\Service\ExchangeRateSynchronizer" autowire="true" autoconfigure="true" public="true" />
+
+        <!-- Console Commands -->
+        <service id="Adeliom\SyliusExchangeRatePlugin\Command\SynchronizeExchangeRatesCommand" autowire="true" autoconfigure="true">
+            <tag name="console.command" />
+        </service>
+
+        <!-- Controllers -->
+        <service id="Adeliom\SyliusExchangeRatePlugin\Controller\Admin\SynchronizeExchangeRateController" autowire="true" autoconfigure="true" public="true">
+            <tag name="controller.service_arguments" />
+        </service>
+
+        <!-- Exchange Rate Providers -->
+        <service id="Adeliom\SyliusExchangeRatePlugin\Provider\EcbProvider" autowire="true" autoconfigure="true">
+            <tag name="adeliom.exchange_rate_provider" priority="100" />
+        </service>
+
+        <service id="Adeliom\SyliusExchangeRatePlugin\Provider\FixerProvider" autowire="true" autoconfigure="true">
+            <argument key="$apiKey">%env(string:default::FIXER_API_KEY)%</argument>
+            <argument key="$baseCurrency">%env(string:default:adeliom.fixer.base_currency.default:FIXER_BASE_CURRENCY)%</argument>
+            <tag name="adeliom.exchange_rate_provider" priority="90" />
+        </service>
     </services>
 </container>
