@@ -1,53 +1,46 @@
 {# Exchange Rate Synchronization Button #}
 
-{% set modal_id = 'modal-synchronize-exchange-rates' %}
+{% set dialog_id = 'dialog-synchronize-exchange-rates' %}
 
-{% component 'sylius_admin:confirmation_modal' with {modal_id: modal_id, type: 'synchronize'} %}
-    {% import '@SyliusAdmin/shared/helper/button.html.twig' as button %}
+{# Trigger Button #}
+<div>
+    <button type="button" class="btn" id="{{ dialog_id }}-trigger">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon" aria-hidden="true">
+            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 11A8.1 8.1 0 0 0 4.5 9M4 5v4h4m-4 4a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"></path>
+        </svg>
+        {{ 'adeliom.sylius_exchange_rate.ui.synchronize'|trans }}
+    </button>
+</div>
 
-    {% block trigger %}
-        <div>
-            {{ button.default({
-                text: 'adeliom.sylius_exchange_rate.ui.synchronize'|trans,
-                icon: 'tabler:refresh',
-                attr: 'data-bs-toggle=modal data-bs-target=#' ~ modal_id,
-            }) }}
+{# Native HTML Dialog Element #}
+<dialog id="{{ dialog_id }}" class="exchange-rate-dialog">
+    <div class="dialog-content">
+        <div class="dialog-header">
+            <h1 class="dialog-title">{{ 'adeliom.sylius_exchange_rate.ui.confirm_synchronization'|trans }}</h1>
         </div>
-    {% endblock %}
-
-    {% block header %}
-        <h1 class="modal-title py-5">{{ 'adeliom.sylius_exchange_rate.ui.confirm_synchronization'|trans }}</h1>
-    {% endblock %}
-
-    {% block content %}
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title py-5">{{ 'adeliom.sylius_exchange_rate.ui.confirm_synchronization'|trans }}</h1>
-            </div>
-            <div class="modal-body">
-                <div class="alert alert-warning" role="alert">
-                    {{ ux_icon('tabler:alert-triangle', {class: 'icon icon-sm me-2'}) }}
-                    {{ 'adeliom.sylius_exchange_rate.ui.synchronization_warning'|trans }}
-                </div>
-            </div>
-            <div class="modal-footer">
-                {{ block('footer') }}
+        <div class="dialog-body">
+            <div class="alert alert-warning" role="alert">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon icon-sm me-2" aria-hidden="true">
+                    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v4m-1.637-9.409L2.257 17.125a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636-2.87L13.637 3.59a1.914 1.914 0 0 0-3.274 0zM12 16h.01"></path>
+                </svg>
+                {{ 'adeliom.sylius_exchange_rate.ui.synchronization_warning'|trans }}
             </div>
         </div>
-    {% endblock %}
+        <div class="dialog-footer">
+            <form action="{{ path('adeliom_admin_exchange_rate_synchronize') }}" method="POST">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('exchange_rate_synchronize') }}" />
 
-    {% block footer %}
-        <form action="{{ path('adeliom_admin_exchange_rate_synchronize') }}" method="POST">
-            <input type="hidden" name="_csrf_token" value="{{ csrf_token('exchange_rate_synchronize') }}" />
+                <button type="button" class="btn" id="{{ dialog_id }}-cancel">
+                    {{ 'sylius.ui.cancel'|trans }}
+                </button>
 
-            {{ button.default({ text: 'sylius.ui.cancel'|trans, attr: 'data-bs-dismiss=modal' }) }}
-            {{ button.default({
-                text: 'adeliom.sylius_exchange_rate.ui.synchronize'|trans,
-                type: 'submit',
-                class: 'btn-primary',
-                icon: 'tabler:refresh',
-                attr: sylius_test_html_attribute('confirm-button')
-            }) }}
-        </form>
-    {% endblock %}
-{% endcomponent %}
+                <button type="submit" class="btn btn-primary" data-test-confirm-button="">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon" aria-hidden="true">
+                        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 11A8.1 8.1 0 0 0 4.5 9M4 5v4h4m-4 4a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"></path>
+                    </svg>
+                    {{ 'adeliom.sylius_exchange_rate.ui.synchronize'|trans }}
+                </button>
+            </form>
+        </div>
+    </div>
+</dialog>

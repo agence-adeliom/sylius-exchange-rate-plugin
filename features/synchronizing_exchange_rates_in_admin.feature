@@ -8,7 +8,7 @@ Feature: Synchronizing exchange rates in admin
         Given the store operates on a single channel in "United States"
         And I am logged in as an administrator
 
-    @ui @javascript @mink:chromedriver
+    @ui @javascript @mink:panther
     Scenario: Synchronizing exchange rates by clicking the synchronize button
         When I browse exchange rates
         And I click the synchronize button

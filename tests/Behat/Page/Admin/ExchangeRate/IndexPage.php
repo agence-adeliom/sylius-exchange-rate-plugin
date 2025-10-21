@@ -11,42 +11,71 @@ final class IndexPage extends BaseIndexPage implements IndexPageInterface
 {
     public function clickSynchronizeButton(): void
     {
-        $button = $this->getDocument()->find('css', '#exchange-rate-sync-button');
+        // Find the button that triggers the dialog
+        $triggerButton = $this->getDocument()->find('css', '#dialog-synchronize-exchange-rates-trigger');
 
-        if (null === $button) {
-            throw new \RuntimeException('Synchronize button not found on the page');
+        if (null === $triggerButton) {
+            throw new \RuntimeException('Synchronize trigger button not found on the page');
         }
 
-        $button->click();
+        $triggerButton->click();
 
-        // Wait for the AJAX request to complete
-        $this->getDocument()->waitFor(5, function () {
-            $statusSpan = $this->getDocument()->find('css', '#sync-status');
-            return $statusSpan && $statusSpan->isVisible();
+        // Wait for the dialog to appear and be open
+        $this->getDocument()->waitFor(10, function () {
+            $dialog = $this->getDocument()->find('css', '#dialog-synchronize-exchange-rates[open]');
+            if (!$dialog) {
+                return false;
+            }
+
+            // Check that the confirm button is visible
+            $confirmButton = $this->getDocument()->find('css', '[data-test-confirm-button]');
+            return $confirmButton && $confirmButton->isVisible();
+        });
+
+        // Small wait for dialog animation
+        usleep(300000); // 300ms
+
+        // Find and submit the form
+        $form = $this->getDocument()->find('css', '#dialog-synchronize-exchange-rates form');
+
+        if (null === $form) {
+            throw new \RuntimeException('Form not found in the dialog');
+        }
+
+        // Submit the form
+        $form->submit();
+
+        // Wait for the page to reload or flash message to appear
+        $this->getDocument()->waitFor(10, function () {
+            $flashMessages = $this->getDocument()->find('css', '.alert, .flash-message');
+            return null !== $flashMessages;
         });
     }
 
     public function hasSyncSuccessMessage(): bool
     {
-        $statusSpan = $this->getDocument()->find('css', '#sync-status');
+        // Check for Sylius success flash message
+        $successAlert = $this->getDocument()->find('css', '.alert-success, .flash-success');
 
-        if (null === $statusSpan || !$statusSpan->isVisible()) {
+        if (null === $successAlert || !$successAlert->isVisible()) {
             return false;
         }
 
-        $successMessage = $statusSpan->find('css', 'span[style*="color: #28a745"]');
+        $text = $successAlert->getText();
 
-        return null !== $successMessage;
+        // Check if the message contains synchronization confirmation
+        return str_contains($text, 'Synchronization complete');
     }
 
     public function getSyncStatusMessage(): string
     {
-        $statusSpan = $this->getDocument()->find('css', '#sync-status');
+        // Look for any flash message (success, warning, or error)
+        $alert = $this->getDocument()->find('css', '.alert, .flash-message');
 
-        if (null === $statusSpan) {
-            throw new \RuntimeException('Sync status element not found');
+        if (null === $alert) {
+            throw new \RuntimeException('No flash message found');
         }
 
-        return trim($statusSpan->getText());
+        return trim($alert->getText());
     }
 }

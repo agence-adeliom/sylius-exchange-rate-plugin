@@ -2,13 +2,6 @@
 
 default:
     suites:
-        greeting_customer:
-            contexts:
-                - adeliom_sylius_exchange_rate.context.ui.shop.welcome
-
-            filters:
-                tags: "@greeting_customer"
-
         admin_exchange_rates:
             contexts:
                 - sylius.behat.context.hook.doctrine_orm

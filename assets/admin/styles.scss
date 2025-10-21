@@ -1,0 +1,59 @@
+// Admin styles for Exchange Rate Plugin
+
+// Native dialog styling for exchange rate synchronization
+#dialog-synchronize-exchange-rates {
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+
+    // Dialog backdrop (::backdrop pseudo-element)
+    &::backdrop {
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    // Dialog content structure matching Bootstrap modal
+    .dialog-content {
+        display: flex;
+        flex-direction: column;
+        background-color: var(--tblr-bg-surface);
+        color: var(--tblr-body-color);
+    }
+
+    .dialog-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid var(--tblr-border-color);
+
+        .dialog-title {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+    }
+
+    .dialog-body {
+        padding: 1.5rem;
+        flex: 1 1 auto;
+    }
+
+    .dialog-footer {
+        padding: 1.5rem;
+        border-top: 1px solid var(--tblr-border-color);
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.5rem;
+
+        form {
+            display: flex;
+            gap: 0.5rem;
+        }
+    }
+
+    // Alert styling within dialog
+    .alert {
+        margin-bottom: 0;
+    }
+}
