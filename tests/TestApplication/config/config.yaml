@@ -5,6 +5,14 @@ imports:
 twig:
     paths:
         '%kernel.project_dir%/../../../tests/TestApplication/templates': ~
+        
+sylius_twig_hooks:
+    hooks:
+        # Add synchronize button to exchange rate index page header actions
+        'sylius_admin.exchange_rate.index.content.header.title_block.actions':
+            synchronize_button:
+                template: '@AdeliomSyliusExchangeRatePlugin/admin/exchange_rate/_synchronize_button.html.twig'
+                priority: 10
 
 # Remove if you do not need to extend entities
 doctrine:
